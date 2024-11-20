@@ -1,5 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
-import { AppService } from "./app.service";
+import { AppService } from "@app/app.service";
 
 @Controller()
 export class AppController {
@@ -13,5 +13,10 @@ export class AppController {
   @Get("contract-address")
   getContractAddress() {
     return { result: this.appService.getContractAddress() };
+  }
+
+  @Get("token-name")
+  async getTokenName() {
+    return { result: await this.appService.getTokenName() };
   }
 }
