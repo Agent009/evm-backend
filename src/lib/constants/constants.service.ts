@@ -65,6 +65,26 @@ export class ConstantsService {
     return this.configService.get<string>("app.bApiServerUrl") || "http://localhost:8000";
   }
 
+  get deployerAddress(): string {
+    return this.configService.get<string>("app.deployerAddress") || "";
+  }
+
+  get deployerPrivateKey(): string {
+    return this.configService.get<string>("app.deployerPrivateKey") || "";
+  }
+
+  get ballotSepolia(): string {
+    return this.configService.get<string>("app.contracts.ballot.sepolia") || "";
+  }
+
+  get alchemyApiKey(): string {
+    return this.configService.get<string>("app.integrations.alchemy.apiKey") || "";
+  }
+
+  get alchemySepolia(): string {
+    return this.configService.get<string>("app.integrations.alchemy.sepolia") || "";
+  }
+
   get jwtKey(): string | null | undefined {
     return this.configService.get<string>("app.jwtKey");
   }
