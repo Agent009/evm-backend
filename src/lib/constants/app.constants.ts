@@ -42,6 +42,9 @@ export default registerAs("app", () => ({
     deployerPrivateKey: process.env.PRIVATE_KEY || "",
   },
   contracts: {
+    ballotToken: {
+      sepolia: process.env.BALLOT_TOKEN_SEPOLIA || "",
+    },
     ballot: {
       sepolia: process.env.BALLOT_SEPOLIA || "",
     },

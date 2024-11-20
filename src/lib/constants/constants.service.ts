@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { Address } from "viem";
 import { ConstantsInterface, ConstantsOptions, ConstantsOptionsTypes } from "./interface";
 
 @Injectable()
@@ -73,8 +74,12 @@ export class ConstantsService {
     return this.configService.get<string>("app.deployerPrivateKey") || "";
   }
 
-  get ballotSepolia(): string {
-    return this.configService.get<string>("app.contracts.ballot.sepolia") || "";
+  get ballotTokenSepolia(): Address {
+    return (this.configService.get<string>("app.contracts.ballotToken.sepolia") || "0x") as Address;
+  }
+
+  get ballotSepolia(): Address {
+    return (this.configService.get<string>("app.contracts.ballot.sepolia") || "0x") as Address;
   }
 
   get alchemyApiKey(): string {
