@@ -67,11 +67,11 @@ export class ConstantsService {
   }
 
   get deployerAddress(): string {
-    return this.configService.get<string>("app.deployerAddress") || "";
+    return this.configService.get<string>("app.account.deployerAddress") || "";
   }
 
   get deployerPrivateKey(): string {
-    return this.configService.get<string>("app.deployerPrivateKey") || "";
+    return this.configService.get<string>("app.account.deployerPrivateKey") || "";
   }
 
   get ballotTokenSepolia(): Address {

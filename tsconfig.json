@@ -24,6 +24,7 @@
       "@/*": ["./*"],
       "@app/*": ["./src/*"],
       "@assets/*": ["./src/assets/*"],
+      "@dto/*": ["./src/dto/*"],
       "@lib/*": ["./src/lib/*"],
       "@constants/*": ["./src/lib/constants/*"],
     }
