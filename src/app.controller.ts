@@ -3,14 +3,15 @@ import { AppService } from "@app/app.service";
 import { Address } from "viem";
 import { ApiOperation } from "@nestjs/swagger";
 import { MintTokenDto } from "@dto/mintToken.dto";
+import { ContractType } from "@lib/types";
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get("contract-address")
-  getContractAddress() {
-    return { result: this.appService.getContractAddress() };
+  @Get(["contract-address", "contract-address/:type"])
+  getContractAddress(@Param("type") type?: ContractType) {
+    return { result: this.appService.getContractAddress(type || "token") };
   }
 
   @Get("token-name")

@@ -16,8 +16,7 @@ import * as ballotJson from "./assets/TokenizedBallot.json";
 import { ConstantsService } from "@lib/constants";
 import { formatBigInt } from "@lib/utils";
 import { privateKeyToAccount } from "viem/accounts";
-
-type ContractType = "token" | "ballot";
+import { ContractType } from "@lib/types";
 
 @Injectable()
 export class AppService {
