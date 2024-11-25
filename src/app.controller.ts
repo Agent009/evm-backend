@@ -65,4 +65,9 @@ export class AppController {
   async mintTokens(@Body() body: MintTokenDto) {
     return { result: await this.appService.mintTokens(body.address as Address) };
   }
+
+  @Get("ballot-winner")
+  async getWinnerName() {
+    return { result: await this.appService.getWinnerName() };
+  }
 }

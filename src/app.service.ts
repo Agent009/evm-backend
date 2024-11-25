@@ -8,12 +8,16 @@ import {
   WalletClient,
   createWalletClient,
   PrivateKeyAccount,
+  hexToString,
 } from "viem";
 import { sepolia } from "viem/chains";
 import * as tokenJson from "@assets/BallotToken.json";
+import * as ballotJson from "./assets/TokenizedBallot.json";
 import { ConstantsService } from "@lib/constants";
 import { formatBigInt } from "@lib/utils";
 import { privateKeyToAccount } from "viem/accounts";
+
+type ContractType = "token" | "ballot";
 
 @Injectable()
 export class AppService {
@@ -39,7 +43,7 @@ export class AppService {
       transport: http(this.config.alchemySepolia),
     });
 
-  private async _readContract<T>(functionName: string, args?: unknown[]): Promise<T> {
+  private async _readTokenContract<T>(functionName: string, args?: unknown[]): Promise<T> {
     return (await this.publicClient.readContract({
       address: this.getContractAddress(),
       abi: tokenJson.abi,
@@ -48,9 +52,18 @@ export class AppService {
     })) as unknown as T;
   }
 
+  private async _readBallotContract<T>(functionName: string, args?: unknown[]): Promise<T> {
+    return (await this.publicClient.readContract({
+      address: this.getContractAddress("ballot"),
+      abi: ballotJson.abi,
+      functionName,
+      args: args || undefined,
+    })) as unknown as T;
+  }
+
   private async _writeContract(functionName: string, args?: unknown[]): Promise<Address> {
     const { request } = await this.publicClient.simulateContract({
-      account: this.getServerWalletAddress(),
+      account: this.walletClient.account,
       address: this.getContractAddress(),
       abi: tokenJson.abi,
       functionName,
@@ -67,32 +80,32 @@ export class AppService {
     // });
   }
 
-  getContractAddress(): Address {
-    return this.config.ballotTokenSepolia;
+  getContractAddress(type: ContractType = "token"): Address {
+    return type === "token" ? this.config.ballotTokenSepolia : this.config.ballotSepolia;
   }
 
   async getTokenName(): Promise<string> {
-    return await this._readContract<string>("name");
+    return await this._readTokenContract<string>("name");
   }
 
   async getTokenSymbol(): Promise<string> {
-    return await this._readContract<string>("symbol");
+    return await this._readTokenContract<string>("symbol");
   }
 
   async getTotalSupply(): Promise<string> {
     const symbol = await this.getTokenSymbol();
-    const totalSupply = await this._readContract<bigint>("totalSupply");
+    const totalSupply = await this._readTokenContract<bigint>("totalSupply");
     return `${formatEther(totalSupply)} ${symbol}`;
   }
 
   async getTokenBalance(address: string): Promise<string> {
     const symbol = await this.getTokenSymbol();
-    const balance = await this._readContract<bigint>("balanceOf", [address]);
+    const balance = await this._readTokenContract<bigint>("balanceOf", [address]);
     return `${formatEther(balance)} ${symbol}`;
   }
 
   async getVotes(address: string): Promise<string> {
-    const balance = await this._readContract<bigint>("getVotes", [address]);
+    const balance = await this._readTokenContract<bigint>("getVotes", [address]);
     return `${formatEther(balance)}`;
   }
 
@@ -115,9 +128,9 @@ export class AppService {
   }
 
   async checkMinterRole(address: Address): Promise<boolean> {
-    const MINTER_ROLE = await this._readContract<string>("MINTER_ROLE");
+    const MINTER_ROLE = await this._readTokenContract<string>("MINTER_ROLE");
     console.log("app -> service -> checkMinterRole -> MINTER_ROLE", MINTER_ROLE);
-    return await this._readContract<boolean>("hasRole", [MINTER_ROLE, address]);
+    return await this._readTokenContract<boolean>("hasRole", [MINTER_ROLE, address]);
   }
 
   async mintTokens(address: Address): Promise<any> {
@@ -136,7 +149,7 @@ export class AppService {
     console.log(`app -> service -> mintTokens -> target had ${votes0} units of voting power BEFORE mint.`);
 
     // Mint
-    const mintTx = await this._writeContract("mint", [address, BigInt("1000000")]);
+    const mintTx = await this._writeContract("mint", [address, BigInt(1000000000000000000n)]);
     const receipt = await this.getTransactionReceipt(mintTx);
 
     // Stats after mint
@@ -155,5 +168,9 @@ export class AppService {
       balance,
       votes,
     };
+  }
+
+  async getWinnerName(): Promise<string> {
+    return hexToString(await this._readBallotContract<Address>("winnerName"));
   }
 }
