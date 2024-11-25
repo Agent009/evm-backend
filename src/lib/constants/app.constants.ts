@@ -17,6 +17,10 @@ const enableCombinedFileLogger: boolean = parseInt(process.env.BCS_FILE_LOG_COMB
 const bApiServerHost = process.env.BAPI_SERVER_HOST || "http://localhost";
 const bApiServerPort = process.env.BAPI_SERVER_PORT || 8051;
 const bApiServerUrl = process.env.BAPI_SERVER_URL || `${bApiServerHost}:${bApiServerPort}`;
+// FAPP
+const fAppServerHost = process.env.FAPP_SERVER_HOST || "http://localhost";
+const fAppServerPort = process.env.FAPP_SERVER_PORT || 3000;
+const fAppServerUrl = process.env.FAPP_SERVER_URL || `${fAppServerHost}:${fAppServerPort}`;
 
 export default registerAs("app", () => ({
   // Environment
@@ -35,6 +39,10 @@ export default registerAs("app", () => ({
   bApiServerHost: bApiServerHost,
   bApiServerPort: bApiServerPort,
   bApiServerUrl: bApiServerUrl,
+  // FAPP
+  fAppServerHost: fAppServerHost,
+  fAppServerPort: fAppServerPort,
+  fAppServerUrl: fAppServerUrl,
   // Smart contracts
   account: {
     deployerMemonic: process.env.MNEMONIC || "",

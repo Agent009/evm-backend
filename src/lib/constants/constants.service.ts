@@ -63,7 +63,19 @@ export class ConstantsService {
   }
 
   get bApiServerUrl(): string {
-    return this.configService.get<string>("app.bApiServerUrl") || "http://localhost:8000";
+    return this.configService.get<string>("app.bApiServerUrl") || `${this.bApiServerHost}:${this.bApiServerPort}`;
+  }
+
+  get fAppServerHost(): string {
+    return this.configService.get("app.fAppServerHost") || "http://localhost";
+  }
+
+  get fAppServerPort(): number {
+    return this.configService.get<number>("app.fAppServerPort") || 3000;
+  }
+
+  get fAppServerUrl(): string {
+    return this.configService.get<string>("app.fAppServerUrl") || `${this.fAppServerHost}:${this.fAppServerPort}`;
   }
 
   get deployerAddress(): string {

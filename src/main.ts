@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const constants: ConstantsService = app.get(ConstantsService);
   app.enableCors({
-    origin: [constants.bcsServerUrl, constants.bApiServerUrl, "http://localhost:3000"],
+    origin: [constants.bcsServerUrl, constants.bApiServerUrl, constants.fAppServerUrl],
   });
 
   // Setup OpenAPI
